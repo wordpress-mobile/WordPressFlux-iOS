@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
   s.version          = "1.0.0"
   s.summary          = "WordPressFlux is a Flux-inspired data flow architecture."
   s.description      = <<-DESC
-                       WordPressFlux is a Flux-inspired data flow architecture.
+                       WordPressFlux is a Flux-inspired data flow architecture. See README for details.
                        DESC
   s.author           = { "WordPress" => "mobile@automattic.com" }
   s.homepage         = "https://github.com/wordpress-mobile/WordPressFlux-iOS"
