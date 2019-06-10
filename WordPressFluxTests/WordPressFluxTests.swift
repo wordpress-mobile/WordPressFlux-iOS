@@ -158,4 +158,50 @@ class WordPressFluxTests: XCTestCase {
         XCTAssertEqual(store.activeQueries.count, 1, "Store should have one active query")
         XCTAssertEqual(store.queriesChangedCount, 1, "Store should have processed one queriesChanged event")
     }
+    
+    func testObservable() {
+        class TestViewModel: Observable {
+            var changeDispatcher: Dispatcher<Void> = Dispatcher()
+            
+            private (set) var id: Int = 0 {
+                didSet {
+                    emitChange()
+                }
+            }
+            
+            func test() {
+                id = 1
+            }
+        }
+        
+        let viewModel = TestViewModel()
+        var receipts = [Receipt]()
+        receipts.append(viewModel.onChange {
+            XCTAssertEqual(viewModel.id, 1, "view model id should be 1 after `emitChange`")
+        })
+        viewModel.test()
+    }
+    
+    func testObservableWithPayload() {
+        class TestViewModel: Observable {
+            var changeDispatcher: Dispatcher<Int> = Dispatcher()
+            
+            private var id: Int = 0 {
+                didSet {
+                    emitChange(for: id)
+                }
+            }
+            
+            func test() {
+                id = 1
+            }
+        }
+        
+        let viewModel = TestViewModel()
+        var receipts = [Receipt]()
+        receipts.append(viewModel.onChange { id in
+            XCTAssertEqual(id, 1, "view model id should be 1 after `emitChange` with a specific payload")
+        })
+        viewModel.test()
+    }
 }

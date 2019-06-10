@@ -13,9 +13,10 @@
 ///
 ///
 public protocol Observable {
+    associatedtype Payload
     /// The Dispatcher to keep track of all observers.
     ///
-    var changeDispatcher: Dispatcher<Void> { get }
+    var changeDispatcher: Dispatcher<Payload> { get }
 
     /// Registers a new observer.
     ///
@@ -23,14 +24,21 @@ public protocol Observable {
     /// The observer should keep a copy of the returned Receipt for as long as
     /// it desires to receive change notifications.
     ///
-    func onChange(_ handler: @escaping () -> Void) -> Receipt
+    func onChange(_ handler: @escaping (Payload) -> Void) -> Receipt
 }
 
 public extension Observable {
-    func onChange(_ handler: @escaping () -> Void) -> Receipt {
+    func onChange(_ handler: @escaping (Payload) -> Void) -> Receipt {
         return changeDispatcher.subscribe(handler)
     }
 
+    /// Notifies all registered observers of a change for a specific payload.
+    func emitChange(for payload: Payload) {
+        changeDispatcher.dispatch(payload)
+    }
+}
+
+public extension Observable where Payload == Void {
     /// Notifies all registered observers of a change.
     func emitChange() {
         changeDispatcher.dispatch()
